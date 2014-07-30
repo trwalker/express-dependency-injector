@@ -1,0 +1,33 @@
+{
+  "name": "express-dependency-injector",
+  "version": "1.0.0",
+  "description": "Dependency injector for Express controllers using di.js",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trwalker/express-dependency-injector.git"
+  },
+  "keywords": [
+    "di",
+    "express",
+    "express-di",
+    "injector",
+    "dependency injector",
+    "express dependency injector"
+  ],
+  "dependencies": {
+    "di": "^2.0.0-pre-9"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.21.1",
+    "sinon": "^1.10.3",
+    "grunt": "^0.4.5"
+  },
+  "scripts": {
+    "test": "mocha",
+    "install-local": "npm install -g mocha & npm install"
+  },
+  "author": "Tim Walker <tim.r.walker@gmail.com>",
+  "license": "MIT"
+}
