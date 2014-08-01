@@ -1,6 +1,8 @@
 {
   "name": "express-dependency-injector",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "author": "Tim Walker <tim.r.walker@gmail.com>",
+  "license": "MIT",
   "description": "Dependency injector for Express controllers using di.js",
   "main": "index.js",
   "repository": {
@@ -26,7 +28,5 @@
   "scripts": {
     "test": "mocha",
     "install-local": "npm install -g mocha & npm install"
-  },
-  "author": "Tim Walker <tim.r.walker@gmail.com>",
-  "license": "MIT"
+  }
 }
