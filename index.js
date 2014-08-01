@@ -1,20 +1,23 @@
 'use strict';
 
 module.exports = function(application) {
-return (function(application) {
 
-    var di = require('di');
+  var di = require('di');
 
-    var dependencyBinder = require('./lib/dependencybinder')(application);
-    var dependencyInjectorItems = require('./lib/dependencyinjectoritems')(di, dependencyBinder);
-    var dependencyInjector = require('./lib/dependencyinjector')(di, dependencyInjectorItems);
+  var DependencyBinder = require('./lib/dependencybinder');
+  var dependencyBinder = new DependencyBinder(application);
 
-    application.bind = dependencyBinder.bind;
+  var DependencyInjectorItems = require('./lib/dependencyinjectoritems');
+  var dependencyInjectorItems = new DependencyInjectorItems(di, dependencyBinder);
 
-    application.use(function(req, res, next){
-      dependencyInjector.initialize(req);
-      next();
-    });
+  var DependencyInjector = require('./lib/dependencyinjector');
+  var dependencyInjector = new DependencyInjector(di, dependencyInjectorItems);
 
-  })(application);
+  application.bind = dependencyBinder.bind;
+
+  application.use(function(req, res, next){
+    dependencyInjector.initialize(req);
+    next();
+  });
+
 };
