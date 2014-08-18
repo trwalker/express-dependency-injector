@@ -6,10 +6,12 @@ Dependency injector for Express using di.js (https://github.com/angular/di.js).
 ### Binding Dependencies
 
 > var express = require('express');
+>
 > var application = express();
+>
 > require('express-dependency-injector')(application);
 >
-> application.bind(MyObject, [MyObjectDependency1, MyObjectDependency2], 'singleton')
+> application.bind(MyObject, [Dependency1, Dependency2], 'singleton')
 
 ### Resolving Dependencies
 
@@ -17,13 +19,16 @@ Dependency injector for Express using di.js (https://github.com/angular/di.js).
 
 ### Valid Scopes
 > // singleton, webrequest, transient
-> application.bind(MyObject, [MyObjectDependency1, MyObjectDependency2], 'singleton');
-> application.bind(MyObject, [MyObjectDependency1, MyObjectDependency2], 'webrequest');
-> application.bind(MyObject, [MyObjectDependency1, MyObjectDependency2], 'transient');
+>
+> application.bind(MyObject, [Dependency1, Dependency2], 'singleton');
+>
+> application.bind(MyObject, [Dependency1, Dependency2], 'webrequest');
+>
+> application.bind(MyObject, [Dependency1, Dependency2], 'transient');
 
 ### Dependency Objects
 
-Dependency objects must follow the constructor pattern.  The di.js library makes new instances of these objects when they are requested.  You use the scope parameter on the bind function to control how often a new instance is created when you request your object.
+All objects and dependencies must follow the constructor pattern.  The di.js library makes new instances of these objects when they are requested.  You use the scope parameter on the bind function to control how often a new instance is created when you request your object.
 
 See the following link for details and examples of the constructor pattern: http://addyosmani.com/resources/essentialjsdesignpatterns/book/#constructorpatternjavascript
 
