@@ -22,7 +22,6 @@ describe('DependencyInjectorItems Tests', function() {
     dependencyBinder.get = function() {};
 
     sinon.stub(dependencyBinder, "get", function(scope) {
-      debugger;
       if(scope) {
         return [ { item: MockItem, dependencies: [] }];
       }
