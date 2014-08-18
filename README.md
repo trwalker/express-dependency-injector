@@ -3,6 +3,10 @@ express-dependency-injector
 
 Dependency injector for Express using di.js (https://github.com/angular/di.js).
 
+### NPM Location
+
+https://www.npmjs.org/package/express-dependency-injector
+
 ### Binding Dependencies
 
 > var express = require('express');
