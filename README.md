@@ -1,4 +1,36 @@
 express-dependency-injector
 ===========================
 
-Dependency injector for Express controls using di.js.  Still in beta, full details and examples will be provided soon.
+Dependency injector for Express using di.js (https://github.com/angular/di.js).
+
+### Binding Dependencies
+
+> var express = require('express');
+> var application = express();
+> require('express-dependency-injector')(application);
+>
+> application.bind(MyObject, [MyObjectDependency1, MyObjectDependency2], 'singleton')
+
+### Resolving Dependencies
+
+> var myObject = req.dependencyInjector.get(MyObject);
+
+### Valid Scopes
+> // singleton, webrequest, transient
+> application.bind(MyObject, [MyObjectDependency1, MyObjectDependency2], 'singleton');
+> application.bind(MyObject, [MyObjectDependency1, MyObjectDependency2], 'webrequest');
+> application.bind(MyObject, [MyObjectDependency1, MyObjectDependency2], 'transient');
+
+### Dependency Objects
+
+Dependency objects must follow the constructor pattern.  The di.js library makes new instances of these objects when they are requested.  You use the scope parameter on the bind function to control how often a new instance is created when you request your object.
+
+See the following link for details and examples of the constructor pattern: http://addyosmani.com/resources/essentialjsdesignpatterns/book/#constructorpatternjavascript
+
+### Example Project
+
+https://github.com/trwalker/express-dependency-injector-example
+
+### Run Tests Command
+
+> npm test
