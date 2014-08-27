@@ -24,11 +24,11 @@ https://www.npmjs.org/package/express-dependency-injector
 ### Valid Scopes
 > // singleton, webrequest, transient
 >
-> application.bind(MyObject, [Dependency1, Dependency2], 'singleton');
+> application.dependencyBinder.bind(MyObject, [Dependency1, Dependency2], 'singleton');
 >
-> application.bind(MyObject, [Dependency1, Dependency2], 'webrequest');
+> application.dependencyBinder.bind(MyObject, [Dependency1, Dependency2], 'webrequest');
 >
-> application.bind(MyObject, [Dependency1, Dependency2], 'transient');
+> application.dependencyBinder.bind(MyObject, [Dependency1, Dependency2], 'transient');
 
 ### Dependency Objects
 

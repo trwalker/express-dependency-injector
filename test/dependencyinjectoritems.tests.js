@@ -1,15 +1,18 @@
-describe('DependencyInjectorItems Tests', function() {
+describe('DependencyItemBuilder Tests', function() {
+
+  var MockItem;
+  var MockDependency;
+  var MockDependencyTwo;
 
   var di;
-  var dependencyBinder;
 
-  var DependencyInjectorItems;
-  var dependencyInjectorItems;
+  var DependencyItemBuilder;
+  var dependencyItemBuilder;
 
   beforeEach(function() {
-    var MockItem = function() {};
-
-    global.dependencyInjectorItems = null;
+    MockItem = function() {};
+    MockDependency = function() {};
+    MockDependencyTwo = function() {};
 
     di = {};
     di.Inject = function() {};
@@ -18,63 +21,88 @@ describe('DependencyInjectorItems Tests', function() {
     sinon.stub(di, "Inject", function() { this.tokens = []; });
     sinon.stub(di, "annotate", function(item, inject) { });
 
-    dependencyBinder = {};
-    dependencyBinder.get = function() {};
-
-    sinon.stub(dependencyBinder, "get", function(scope) {
-      if(scope) {
-        return [ { item: MockItem, dependencies: [] }];
-      }
-      else {
-        throw 'null scope exception';
-      }
-    });
-
-    DependencyInjectorItems = require('../lib/dependencyinjectoritems');
-    dependencyInjectorItems = new DependencyInjectorItems(di, dependencyBinder);
+    DependencyItemBuilder = require('../lib/dependencyitembuilder');
+    dependencyItemBuilder = new DependencyItemBuilder(di);
   });
 
-  describe('get()', function() {
+  describe('buildInjectorItem()', function() {
 
     it('is a function', function() {
-      expect(dependencyInjectorItems.get).to.be.a('function');
+      expect(dependencyItemBuilder.buildInjectorItem).to.be.a('function');
     });
 
-    it('should throw on null scope', function() {
-      var getFunction = dependencyInjectorItems.get;
-      var scope = null;
+    it('should throw on undefined item', function() {
+      var buildInjectorItemFunction = dependencyItemBuilder.buildInjectorItem;
+      var item;
 
-      expect(getFunction.bind(dependencyInjectorItems, scope)).to.throw('null scope exception');
+      expect(buildInjectorItemFunction.bind(dependencyItemBuilder, item, [ MockDependency ])).to.throw('Parameter "item" cannot be null or undefined');
     });
 
-    it('should throw on undefined scope', function() {
-      var getFunction = dependencyInjectorItems.get;
-      var scope;
+    it('should throw on null item', function() {
+      var buildInjectorItemFunction = dependencyItemBuilder.buildInjectorItem;
+      var item = null;
 
-      expect(getFunction.bind(dependencyInjectorItems, scope)).to.throw('null scope exception');
+      expect(buildInjectorItemFunction.bind(dependencyItemBuilder, item, [ MockDependency ])).to.throw('Parameter "item" cannot be null or undefined');
     });
 
-    it('should return items when valid scope', function() {
-      var items = dependencyInjectorItems.get('singleton');
+    it('should return item when valid input', function() {
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, [ MockDependency ]);
 
-      expect(items.length).to.equal(1);
+      expect(injectorItem).to.equal(MockItem);
     });
 
-    it('should call dependencyBinder get when valid scope', function() {
-      var items = dependencyInjectorItems.get('singleton');
+    it('should return item when undefined dependencies', function() {
+      var dependencies;
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, dependencies);
 
-      expect(dependencyBinder.get.calledOnce).to.equal(true);
+      expect(injectorItem).to.equal(MockItem);
     });
 
-    it('should return items from cache', function() {
-      var CacheItem = function() { this.cacheItem = true; };
+    it('should return item when null dependencies', function() {
+      var dependencies = null;
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, dependencies);
 
-      global.dependencyInjectorItems = {};
-      global.dependencyInjectorItems['singleton'] = [ CacheItem ];
+      expect(injectorItem).to.equal(MockItem);
+    });
 
-      var items = dependencyInjectorItems.get('singleton');
-      expect(items[0]).to.equal(CacheItem);
-      expect(dependencyBinder.get.calledOnce).to.equal(false);
+    it('should not call di.Inject() when null dependencies are passed', function() {
+      var dependencies = null;
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, dependencies);
+
+      expect(di.Inject.callCount).to.equal(0);
+    });
+
+    it('should call di.Inject() once when one dependency is passed', function() {
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, [ MockDependency ]);
+
+      expect(di.Inject.callCount).to.equal(1);
+    });
+
+    it('should call di.Inject() once when two dependencies are passed', function() {
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, [ MockDependency, MockDependencyTwo ]);
+
+      expect(di.Inject.callCount).to.equal(1);
+    });
+
+    it('should not call di.annotate() when null dependecies are passed', function() {
+      var dependencies = null;
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, dependencies);
+
+      expect(di.annotate.callCount).to.equal(0);
+    });
+
+    it('should call di.annotate() once when one dependecy is passed', function() {
+      var dependencies = null;
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, [ MockDependency ]);
+
+      expect(di.annotate.callCount).to.equal(1);
+    });
+
+    it('should call di.annotate() once when two dependecies are passed', function() {
+      var dependencies = null;
+      var injectorItem = dependencyItemBuilder.buildInjectorItem(MockItem, [ MockDependency, MockDependencyTwo ]);
+
+      expect(di.annotate.callCount).to.equal(1);
     });
 
   });

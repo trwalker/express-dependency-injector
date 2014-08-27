@@ -2,7 +2,7 @@ describe('DependencyInjector Tests', function() {
 
   var di;
   var req;
-  var dependencyInjectorItems;
+  var dependencyBinder;
 
   var DependencyInjector;
   var dependencyInjector;
@@ -10,6 +10,7 @@ describe('DependencyInjector Tests', function() {
   beforeEach(function() {
     var MockItem = function() {};
 
+    global.dependencyInjector = null;
     global.dependencyInjectorItems = null;
 
     di = {};
@@ -19,10 +20,10 @@ describe('DependencyInjector Tests', function() {
 
     req = {};
 
-    dependencyInjectorItems = {};
-    dependencyInjectorItems.get = function(scope) {};
+    dependencyBinder = {};
+    dependencyBinder.get = function() {};
 
-    sinon.stub(dependencyInjectorItems, "get", function(scope) {
+    sinon.stub(dependencyBinder, "get", function(scope) {
       if(scope) {
         return [ MockItem ];
       }
@@ -32,9 +33,7 @@ describe('DependencyInjector Tests', function() {
     });
 
     DependencyInjector = require('../lib/dependencyinjector');
-    dependencyInjector = new DependencyInjector(di, dependencyInjectorItems);
-
-    global.dependencyInjector = null;
+    dependencyInjector = new DependencyInjector(di, dependencyBinder);    
   });
 
   describe('initialize()', function() {
@@ -57,17 +56,17 @@ describe('DependencyInjector Tests', function() {
       expect(initializeMethod.bind(dependencyInjector, request)).to.throw('Express request object must be passed to initialize() and cannot be null or undefined');
     });
 
-    it('should call dependencyInjectorItems get() twice on first call', function() {
+    it('should call dependencyBinder get() twice on first call', function() {
       dependencyInjector.initialize(req);
 
-      expect(dependencyInjectorItems.get.callCount).to.equal(2);
+      expect(dependencyBinder.get.callCount).to.equal(2);
     });
 
-    it('should call dependencyInjectorItems get() once after first call', function() {
+    it('should call dependencyBinder get() once after first call', function() {
       dependencyInjector.initialize(req);
       dependencyInjector.initialize(req);
 
-      expect(dependencyInjectorItems.get.callCount).to.equal(3);
+      expect(dependencyBinder.get.callCount).to.equal(3);
     });
   });
 

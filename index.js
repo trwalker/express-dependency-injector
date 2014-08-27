@@ -4,16 +4,16 @@ module.exports = function(application) {
 
   var di = require('di');
 
-  var DependencyBinder = require('./lib/dependencybinder');
-  var dependencyBinder = new DependencyBinder(application);
+  var DependencyItemBuilder = require('./lib/dependencyitembuilder');
+  var dependencyItemBuilder = new DependencyItemBuilder(di);
 
-  var DependencyInjectorItems = require('./lib/dependencyinjectoritems');
-  var dependencyInjectorItems = new DependencyInjectorItems(di, dependencyBinder);
+  var DependencyBinder = require('./lib/dependencybinder');
+  var dependencyBinder = new DependencyBinder(dependencyItemBuilder);
 
   var DependencyInjector = require('./lib/dependencyinjector');
-  var dependencyInjector = new DependencyInjector(di, dependencyInjectorItems);
+  var dependencyInjector = new DependencyInjector(di, dependencyBinder);
 
-  application.bind = dependencyBinder.bind;
+  application.dependencyBinder = dependencyBinder;
 
   application.use(function(req, res, next){
     dependencyInjector.initialize(req);
