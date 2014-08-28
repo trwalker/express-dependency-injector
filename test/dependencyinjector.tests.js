@@ -8,7 +8,8 @@ describe('DependencyInjector Tests', function() {
   var dependencyInjector;
 
   beforeEach(function() {
-    var MockItem = function() {};
+    var MockChildInjectorItem = function() {};
+    var MockParentInjectorItem = function() {};
 
     global.dependencyInjector = null;
     global.dependencyInjectorItems = null;
@@ -21,19 +22,19 @@ describe('DependencyInjector Tests', function() {
     req = {};
 
     dependencyBinder = {};
-    dependencyBinder.get = function() {};
+    dependencyBinder.childInjectorItems = function() {};
+    dependencyBinder.parentInjectorItems = function() {};
 
-    sinon.stub(dependencyBinder, "get", function(scope) {
-      if(scope) {
-        return [ MockItem ];
-      }
-      else {
-        throw 'null scope exception';
-      }
+    sinon.stub(dependencyBinder, "childInjectorItems", function() {
+      return [ MockChildInjectorItem ];
+    });
+
+    sinon.stub(dependencyBinder, "parentInjectorItems", function() {
+      return [ MockParentInjectorItem ];
     });
 
     DependencyInjector = require('../lib/dependencyinjector');
-    dependencyInjector = new DependencyInjector(di, dependencyBinder);    
+    dependencyInjector = new DependencyInjector(di, dependencyBinder);
   });
 
   describe('initialize()', function() {
@@ -56,17 +57,19 @@ describe('DependencyInjector Tests', function() {
       expect(initializeMethod.bind(dependencyInjector, request)).to.throw('Express request object must be passed to initialize() and cannot be null or undefined');
     });
 
-    it('should call dependencyBinder get() twice on first call', function() {
+    it('should call dependencyBinder childInjectorItems() and parentInjectorItems() on first call', function() {
       dependencyInjector.initialize(req);
 
-      expect(dependencyBinder.get.callCount).to.equal(2);
+      expect(dependencyBinder.parentInjectorItems.callCount).to.equal(1);
+      expect(dependencyBinder.childInjectorItems.callCount).to.equal(1);
     });
 
-    it('should call dependencyBinder get() once after first call', function() {
+    it('should call dependencyBinder parentInjectorItems() once after first call', function() {
       dependencyInjector.initialize(req);
       dependencyInjector.initialize(req);
 
-      expect(dependencyBinder.get.callCount).to.equal(3);
+      expect(dependencyBinder.parentInjectorItems.callCount).to.equal(1);
+      expect(dependencyBinder.childInjectorItems.callCount).to.equal(2);
     });
   });
 

@@ -27,7 +27,8 @@ describe('DependencyBinder Tests', function() {
 
     DependencyBinder = require('../lib/dependencybinder');
     dependencyBinder = new DependencyBinder(dependencyItemBuilder);
-    dependencyBinder.clear();
+
+    global.dependencyInjectorItems = null;
   });
 
   describe('bind()', function() {
@@ -78,31 +79,52 @@ describe('DependencyBinder Tests', function() {
       expect(bindFunction.bind(dependencyBinder, MyItem, [ MyDependency ], scope)).to.throw('Invalid dependency scope. Valid scope types are "singleton", "webrequest", and "transient".');
     });
 
-    it('should add item with singleton scope', function() {
+    it('should add item with singleton scope to parent injector items', function() {
       dependencyBinder.bind(MyItem, [ MyDependency ], 'singleton');
-      var items = dependencyBinder.get('singleton');
+      var items = dependencyBinder.parentInjectorItems();
 
       expect(items[0]).to.equal(MyItem);
+    });
+
+    it('should not add item with singleton scope to child injector items', function() {
+      dependencyBinder.bind(MyItem, [ MyDependency ], 'singleton');
+      var items = dependencyBinder.childInjectorItems();
+
+      expect(items.length).to.equal(0);
     });
 
     it('should add item with webrequest scope', function() {
       dependencyBinder.bind(MyItem, [ MyDependency ], 'webrequest');
-      var items = dependencyBinder.get('webrequest');
+      var items = dependencyBinder.childInjectorItems();
 
       expect(items[0]).to.equal(MyItem);
     });
 
-    it('should add item with transient scope', function() {
+    it('should not add item with webrequest scope to parent injector items', function() {
+      dependencyBinder.bind(MyItem, [ MyDependency ], 'webrequest');
+      var items = dependencyBinder.parentInjectorItems();
+
+      expect(items.length).to.equal(0);
+    });
+
+    it('should add item with transient scope to parent injector items', function() {
       dependencyBinder.bind(MyItem, [ MyDependency ], 'transient');
-      var items = dependencyBinder.get('transient');
+      var items = dependencyBinder.parentInjectorItems();
 
       expect(items[0]).to.equal(MyItem);
+    });
+
+    it('should not add item with transient scope to child injector items', function() {
+      dependencyBinder.bind(MyItem, [ MyDependency ], 'transient');
+      var items = dependencyBinder.childInjectorItems();
+
+      expect(items.length).to.equal(0);
     });
 
     it('should add item with null dependencies', function() {
       var dependencies = null;
       dependencyBinder.bind(MyItem, dependencies, 'singleton');
-      var items = dependencyBinder.get('singleton');
+      var items = dependencyBinder.parentInjectorItems();
 
       expect(items[0]).to.equal(MyItem);
     });
@@ -110,53 +132,50 @@ describe('DependencyBinder Tests', function() {
     it('should add item with undefined dependencies', function() {
       var dependencies;
       dependencyBinder.bind(MyItem, dependencies, 'singleton');
-      var items = dependencyBinder.get('singleton');
+      var items = dependencyBinder.parentInjectorItems();
 
       expect(items[0]).to.equal(MyItem);
     });
 
   });
 
-  describe('get()', function() {
+  describe('childInjectorItems()', function() {
 
     it('is a function', function() {
-      expect(dependencyBinder.get).to.be.a('function');
+      expect(dependencyBinder.childInjectorItems).to.be.a('function');
     });
 
-    it('should throw on null scope', function() {
-      var getFunction = dependencyBinder.get;
-      var scope = null;
-
-      expect(getFunction.bind(dependencyBinder, scope)).to.throw('Dependency scope cannot be null or undefined. Valid scope types are "singleton", "webrequest", and "transient".');
-    });
-
-    it('should throw on undefined scope', function() {
-      var getFunction = dependencyBinder.get;
-      var scope;
-
-      expect(getFunction.bind(dependencyBinder, scope)).to.throw('Dependency scope cannot be null or undefined. Valid scope types are "singleton", "webrequest", and "transient".');
-    });
-
-    it('should throw on empty scope', function() {
-      var getFunction = dependencyBinder.get;
-      var scope = '';
-
-      expect(getFunction.bind(dependencyBinder, scope)).to.throw('Dependency scope cannot be null or undefined. Valid scope types are "singleton", "webrequest", and "transient".');
-    });
-
-    it('should throw on bad scope', function() {
-      var getFunction = dependencyBinder.get;
-      var scope = 'scopedoesnotexist';
-
-      expect(getFunction.bind(dependencyBinder, scope)).to.throw('Invalid dependency scope. Valid scope types are "singleton", "webrequest", and "transient".');
-    });
-
-    it('should return empty items on valid scope', function() {
-      var scope = 'singleton';
-      var items = dependencyBinder.get(scope);
+    it('should return empty items when no items bound', function() {
+      var items = dependencyBinder.childInjectorItems();
 
       expect(items.length).to.equal(0);
     });
+
+    it('should return one item when one item bound', function() {
+      dependencyBinder.bind(MyItem, [ MyDependency ], 'webrequest');
+      var items = dependencyBinder.childInjectorItems();
+
+      expect(items.length).to.equal(1);
+    });
   });
 
+  describe('parentInjectorItems()', function() {
+
+    it('is a function', function() {
+      expect(dependencyBinder.parentInjectorItems).to.be.a('function');
+    });
+
+    it('should return empty items when no items bound', function() {
+      var items = dependencyBinder.parentInjectorItems();
+
+      expect(items.length).to.equal(0);
+    });
+
+    it('should return one item when one item bound', function() {
+      dependencyBinder.bind(MyItem, [ MyDependency ], 'singleton');
+      var items = dependencyBinder.parentInjectorItems();
+
+      expect(items.length).to.equal(1);
+    });
+  });
 });
