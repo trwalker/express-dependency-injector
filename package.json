@@ -1,6 +1,6 @@
 {
   "name": "express-dependency-injector",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "Tim Walker <tim.r.walker@gmail.com>",
   "license": "MIT",
   "description": "Dependency injector for Express controllers using di.js",
@@ -15,7 +15,9 @@
     "express-di",
     "injector",
     "dependency injector",
-    "express dependency injector"
+    "dependency injection",
+    "express dependency injector",
+    "express dependency injection"
   ],
   "dependencies": {
     "di": "^2.0.0-pre-9"
