@@ -33,7 +33,7 @@ describe('DependencyInjector Tests', function() {
       return [ MockParentInjectorItem ];
     });
 
-    DependencyInjector = require('../lib/dependencyinjector');
+    DependencyInjector = require('../../lib/dependencyinjector');
     dependencyInjector = new DependencyInjector(di, dependencyBinder);
   });
 

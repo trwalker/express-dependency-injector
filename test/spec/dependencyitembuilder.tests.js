@@ -23,7 +23,7 @@ describe('DependencyItemBuilder Tests', function() {
     sinon.stub(di, "TransientScope", function() {});
     sinon.stub(di, "annotate", function(item, inject) { });
 
-    DependencyItemBuilder = require('../lib/dependencyitembuilder');
+    DependencyItemBuilder = require('../../lib/dependencyitembuilder');
     dependencyItemBuilder = new DependencyItemBuilder(di);
   });
 

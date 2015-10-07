@@ -25,7 +25,7 @@ describe('DependencyBinder Tests', function() {
       return MyItem;
     });
 
-    DependencyBinder = require('../lib/dependencybinder');
+    DependencyBinder = require('../../lib/dependencybinder');
     dependencyBinder = new DependencyBinder(dependencyItemBuilder);
 
     global.dependencyInjectorItems = null;
