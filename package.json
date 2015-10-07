@@ -20,7 +20,7 @@
     "express dependency injection"
   ],
   "dependencies": {
-    "di": "^2.0.0-pre-9"
+    "di": "^2.0.0-pre-14"
   },
   "devDependencies": {
     "chai": "^1.9.1",
